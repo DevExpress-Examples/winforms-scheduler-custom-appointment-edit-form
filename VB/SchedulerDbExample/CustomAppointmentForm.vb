@@ -18,414 +18,415 @@ Imports System.Collections.Generic
 Imports DevExpress.XtraScheduler.Internal
 
 Namespace SchedulerDbExample
-    Partial Public Class CustomAppointmentForm
-        Inherits DevExpress.XtraEditors.XtraForm
-        Implements IDXManagerPopupMenu
+	Partial Public Class CustomAppointmentForm
+		Inherits DevExpress.XtraEditors.XtraForm
+		Implements IDXManagerPopupMenu
 
-        #Region "Fields"
+		#Region "Fields"
+'INSTANT VB NOTE: The field openRecurrenceForm was renamed since Visual Basic does not allow fields to have the same name as other class members:
+		Private openRecurrenceForm_Renamed As Boolean
+'INSTANT VB NOTE: The field storage was renamed since Visual Basic does not allow fields to have the same name as other class members:
+		Private ReadOnly storage_Renamed As ISchedulerStorage
+'INSTANT VB NOTE: The field control was renamed since Visual Basic does not allow fields to have the same name as other class members:
+		Private ReadOnly control_Renamed As SchedulerControl
+'INSTANT VB NOTE: The field recurringIcon was renamed since Visual Basic does not allow fields to have the same name as other class members:
+		Private recurringIcon_Renamed As Icon
+'INSTANT VB NOTE: The field normalIcon was renamed since Visual Basic does not allow fields to have the same name as other class members:
+		Private normalIcon_Renamed As Icon
+'INSTANT VB NOTE: The field controller was renamed since Visual Basic does not allow fields to have the same name as other class members:
+		Private ReadOnly controller_Renamed As AppointmentFormController
+'INSTANT VB NOTE: The field menuManager was renamed since Visual Basic does not allow fields to have the same name as other class members:
+		Private menuManager_Renamed As IDXMenuManager
+		#End Region
 
-        Private openRecurrenceForm_Renamed As Boolean
+		<EditorBrowsable(EditorBrowsableState.Never)>
+		Public Sub New()
+			InitializeComponent()
+		End Sub
+		Public Sub New(ByVal control As SchedulerControl, ByVal apt As Appointment)
+			Me.New(control, apt, False)
+		End Sub
+		Public Sub New(ByVal control As SchedulerControl, ByVal apt As Appointment, ByVal openRecurrenceForm As Boolean)
+			Guard.ArgumentNotNull(control, "control")
+			Guard.ArgumentNotNull(control.DataStorage, "control.DataStorage")
+			Guard.ArgumentNotNull(apt, "apt")
 
-        Private ReadOnly storage_Renamed As ISchedulerStorage
+			Me.openRecurrenceForm_Renamed = openRecurrenceForm
+			Me.controller_Renamed = CreateController(control, apt)
+			'
+			' Required for Windows Form Designer support
+			'
+			InitializeComponent()
+			SetupPredefinedConstraints()
 
-        Private ReadOnly control_Renamed As SchedulerControl
+			LoadIcons()
 
-        Private recurringIcon_Renamed As Icon
+			Me.control_Renamed = control
+			Me.storage_Renamed = control.Storage
 
-        Private normalIcon_Renamed As Icon
+			Me.edtShowTimeAs.Storage = Me.storage_Renamed
+			Me.edtLabel.Storage = storage_Renamed
+			Me.edtResource.SchedulerControl = control
+			Me.edtResource.Storage = storage_Renamed
+			Me.edtResources.SchedulerControl = control
 
-        Private ReadOnly controller_Renamed As AppointmentFormController
+			SubscribeControllerEvents(Controller)
+			BindControllerToControls()
 
-        Private menuManager_Renamed As IDXMenuManager
-        #End Region
+		End Sub
+		#Region "Properties"
+		Protected Overrides ReadOnly Property ShowMode() As FormShowMode
+			Get
+				Return DevExpress.XtraEditors.FormShowMode.AfterInitialization
+			End Get
+		End Property
+		Public Property MenuManager() As IDXMenuManager
+			Get
+				Return menuManager_Renamed
+			End Get
+			Private Set(ByVal value As IDXMenuManager)
+				menuManager_Renamed = value
+			End Set
+		End Property
+		Protected Friend ReadOnly Property Controller() As AppointmentFormController
+			Get
+				Return controller_Renamed
+			End Get
+		End Property
+		Protected Friend ReadOnly Property Control() As SchedulerControl
+			Get
+				Return control_Renamed
+			End Get
+		End Property
+		Protected Friend ReadOnly Property Storage() As ISchedulerStorage
+			Get
+				Return storage_Renamed
+			End Get
+		End Property
+		Protected Friend ReadOnly Property IsNewAppointment() As Boolean
+			Get
+				Return If(controller_Renamed IsNot Nothing, controller_Renamed.IsNewAppointment, True)
+			End Get
+		End Property
+		Protected Friend ReadOnly Property RecurringIcon() As Icon
+			Get
+				Return recurringIcon_Renamed
+			End Get
+		End Property
+		Protected Friend ReadOnly Property NormalIcon() As Icon
+			Get
+				Return normalIcon_Renamed
+			End Get
+		End Property
+		Protected Friend ReadOnly Property OpenRecurrenceForm() As Boolean
+			Get
+				Return openRecurrenceForm_Renamed
+			End Get
+		End Property
+		Public Property [ReadOnly]() As Boolean
+			Get
+				Return Controller IsNot Nothing AndAlso Controller.ReadOnly
+			End Get
+			Set(ByVal value As Boolean)
+				If Controller.ReadOnly = value Then
+					Return
+				End If
+				Controller.ReadOnly = value
+			End Set
+		End Property
+		#End Region
 
-        <EditorBrowsable(EditorBrowsableState.Never)> _
-        Public Sub New()
-            InitializeComponent()
-        End Sub
-        Public Sub New(ByVal control As SchedulerControl, ByVal apt As Appointment)
-            Me.New(control, apt, False)
-        End Sub
-        Public Sub New(ByVal control As SchedulerControl, ByVal apt As Appointment, ByVal openRecurrenceForm As Boolean)
-            Guard.ArgumentNotNull(control, "control")
-            Guard.ArgumentNotNull(control.Storage, "control.Storage")
-            Guard.ArgumentNotNull(apt, "apt")
+		#Region "#CustomFieldData"
+		Private _contacts As String
 
-            Me.openRecurrenceForm_Renamed = openRecurrenceForm
-            Me.controller_Renamed = CreateController(control, apt)
-            '
-            ' Required for Windows Form Designer support
-            '
-            InitializeComponent()
-            SetupPredefinedConstraints()
+		Public Overridable Sub LoadFormData(ByVal appointment As Appointment)
+			If appointment.CustomFields("Contacts") Is Nothing Then
+				mxContacts.Text = ""
+			Else
+				_contacts = appointment.CustomFields("Contacts").ToString()
+				mxContacts.Text = _contacts
+			End If
 
-            LoadIcons()
+		End Sub
+		Public Overridable Function SaveFormData(ByVal appointment As Appointment) As Boolean
+			appointment.CustomFields("Contacts") = mxContacts.Text
+			Return True
 
-            Me.control_Renamed = control
-            Me.storage_Renamed = control.Storage
+		End Function
+		Public Overridable Function IsAppointmentChanged(ByVal appointment As Appointment) As Boolean
+			If _contacts = appointment.CustomFields("Contacts").ToString() Then
+				Return False
+			Else
+				Return True
+			End If
+		End Function
+		#End Region ' #CustomFieldData
 
-            Me.edtShowTimeAs.Storage = Me.storage_Renamed
-            Me.edtLabel.Storage = storage_Renamed
-            Me.edtResource.SchedulerControl = control
-            Me.edtResource.Storage = storage_Renamed
-            Me.edtResources.SchedulerControl = control
+		Public Overridable Sub SetMenuManager(ByVal menuManager As DevExpress.Utils.Menu.IDXMenuManager)
+			MenuManagerUtils.SetMenuManager(Controls, menuManager)
+			Me.menuManager_Renamed = menuManager
+		End Sub
+		Protected Friend Overridable Sub SetupPredefinedConstraints()
+			Me.tbProgress.Properties.Minimum = AppointmentProcessValues.Min
+			Me.tbProgress.Properties.Maximum = AppointmentProcessValues.Max
+			Me.tbProgress.Properties.SmallChange = AppointmentProcessValues.Step
+			Me.edtResources.Visible = True
+		End Sub
+		Protected Overridable Sub BindControllerToControls()
+			BindControllerToIcon()
+			BindProperties(Me.tbSubject, "Text", "Subject")
+			BindProperties(Me.tbLocation, "Text", "Location")
+			BindProperties(Me.tbDescription, "Text", "Description")
+			BindProperties(Me.edtShowTimeAs, "Status", "Status")
+			BindProperties(Me.edtStartDate, "EditValue", "DisplayStartDate")
+			BindProperties(Me.edtStartDate, "Enabled", "IsDateTimeEditable")
+			BindProperties(Me.edtStartTime, "EditValue", "DisplayStartTime")
+			BindProperties(Me.edtStartTime, "Visible", "IsTimeVisible")
+			BindProperties(Me.edtStartTime, "Enabled", "IsTimeVisible")
+			BindProperties(Me.edtEndDate, "EditValue", "DisplayEndDate", DataSourceUpdateMode.Never)
+			BindProperties(Me.edtEndDate, "Enabled", "IsDateTimeEditable", DataSourceUpdateMode.Never)
+			BindProperties(Me.edtEndTime, "EditValue", "DisplayEndTime", DataSourceUpdateMode.Never)
+			BindProperties(Me.edtEndTime, "Visible", "IsTimeVisible", DataSourceUpdateMode.Never)
+			BindProperties(Me.edtEndTime, "Enabled", "IsTimeVisible", DataSourceUpdateMode.Never)
+			BindProperties(Me.chkAllDay, "Checked", "AllDay")
+			BindProperties(Me.chkAllDay, "Enabled", "IsDateTimeEditable")
 
-            SubscribeControllerEvents(Controller)
-            BindControllerToControls()
+			BindProperties(Me.edtResource, "ResourceId", "ResourceId")
+			BindProperties(Me.edtResource, "Enabled", "CanEditResource")
+			BindToBoolPropertyAndInvert(Me.edtResource, "Visible", "ResourceSharing")
 
-        End Sub
-        #Region "Properties"
-        Protected Overrides ReadOnly Property ShowMode() As FormShowMode
-            Get
-                Return DevExpress.XtraEditors.FormShowMode.AfterInitialization
-            End Get
-        End Property
-        Public Property MenuManager() As IDXMenuManager
-            Get
-                Return menuManager_Renamed
-            End Get
-            Private Set(ByVal value As IDXMenuManager)
-                menuManager_Renamed = value
-            End Set
-        End Property
-        Protected Friend ReadOnly Property Controller() As AppointmentFormController
-            Get
-                Return controller_Renamed
-            End Get
-        End Property
-        Protected Friend ReadOnly Property Control() As SchedulerControl
-            Get
-                Return control_Renamed
-            End Get
-        End Property
-        Protected Friend ReadOnly Property Storage() As ISchedulerStorage
-            Get
-                Return storage_Renamed
-            End Get
-        End Property
-        Protected Friend ReadOnly Property IsNewAppointment() As Boolean
-            Get
-                Return If(controller_Renamed IsNot Nothing, controller_Renamed.IsNewAppointment, True)
-            End Get
-        End Property
-        Protected Friend ReadOnly Property RecurringIcon() As Icon
-            Get
-                Return recurringIcon_Renamed
-            End Get
-        End Property
-        Protected Friend ReadOnly Property NormalIcon() As Icon
-            Get
-                Return normalIcon_Renamed
-            End Get
-        End Property
-        Protected Friend ReadOnly Property OpenRecurrenceForm() As Boolean
-            Get
-                Return openRecurrenceForm_Renamed
-            End Get
-        End Property
-        Public Property [ReadOnly]() As Boolean
-            Get
-                Return Controller IsNot Nothing AndAlso Controller.ReadOnly
-            End Get
-            Set(ByVal value As Boolean)
-                If Controller.ReadOnly = value Then
-                    Return
-                End If
-                Controller.ReadOnly = value
-            End Set
-        End Property
-        #End Region
+			BindProperties(Me.edtResources, "ResourceIds", "ResourceIds")
+			BindProperties(Me.edtResources, "Visible", "ResourceSharing")
+			BindProperties(Me.edtResources, "Enabled", "CanEditResource")
+			BindProperties(Me.lblResource, "Enabled", "CanEditResource")
 
-        #Region "#CustomFieldData"
-        Private _contacts As String
+			BindProperties(Me.edtLabel, "Label", "Label")
+			BindProperties(Me.chkReminder, "Enabled", "ReminderVisible")
+			BindProperties(Me.chkReminder, "Visible", "ReminderVisible")
+			BindProperties(Me.chkReminder, "Checked", "HasReminder")
+			BindProperties(Me.cbReminder, "Enabled", "HasReminder")
+			BindProperties(Me.cbReminder, "Visible", "ReminderVisible")
+			BindProperties(Me.cbReminder, "Duration", "ReminderTimeBeforeStart")
 
-        Public Overridable Sub LoadFormData(ByVal appointment As Appointment)
-            If appointment.CustomFields("Contacts") Is Nothing Then
-                mxContacts.Text = ""
-            Else
-                _contacts = appointment.CustomFields("Contacts").ToString()
-                mxContacts.Text = _contacts
-            End If
+			BindProperties(Me.tbProgress, "Value", "PercentComplete")
+			BindProperties(Me.lblPercentCompleteValue, "Text", "PercentComplete", AddressOf ObjectToStringConverter)
+			BindProperties(Me.progressPanel, "Visible", "ShouldEditTaskProgress")
+			BindToBoolPropertyAndInvert(Me.btnOk, "Enabled", "ReadOnly")
+			BindToBoolPropertyAndInvert(Me.btnRecurrence, "Enabled", "ReadOnly")
+			BindProperties(Me.btnDelete, "Enabled", "CanDeleteAppointment")
+			BindProperties(Me.btnRecurrence, "Visible", "ShouldShowRecurrenceButton")
+		End Sub
+		Protected Overridable Sub BindControllerToIcon()
+			Dim binding As New Binding("Icon", Controller, "AppointmentType")
+			AddHandler binding.Format, AddressOf AppointmentTypeToIconConverter
+			DataBindings.Add(binding)
+		End Sub
+		Protected Overridable Sub ObjectToStringConverter(ByVal o As Object, ByVal e As ConvertEventArgs)
+			e.Value = e.Value.ToString()
+		End Sub
+		Protected Overridable Sub AppointmentTypeToIconConverter(ByVal o As Object, ByVal e As ConvertEventArgs)
+			Dim type As AppointmentType = DirectCast(e.Value, AppointmentType)
+			If type = AppointmentType.Pattern Then
+				e.Value = RecurringIcon
+			Else
+				e.Value = NormalIcon
+			End If
+		End Sub
+		Protected Overridable Sub BindProperties(ByVal target As Control, ByVal targetProperty As String, ByVal sourceProperty As String)
+			BindProperties(target, targetProperty, sourceProperty, DataSourceUpdateMode.OnPropertyChanged)
+		End Sub
+		Protected Overridable Sub BindProperties(ByVal target As Control, ByVal targetProperty As String, ByVal sourceProperty As String, ByVal updateMode As DataSourceUpdateMode)
+			target.DataBindings.Add(targetProperty, Controller, sourceProperty, True, updateMode)
+		End Sub
+		Protected Overridable Sub BindProperties(ByVal target As Control, ByVal targetProperty As String, ByVal sourceProperty As String, ByVal objectToStringConverter As ConvertEventHandler)
+			Dim binding As New Binding(targetProperty, Controller, sourceProperty, True)
+			AddHandler binding.Format, objectToStringConverter
+			target.DataBindings.Add(binding)
+		End Sub
+		Protected Overridable Sub BindToBoolPropertyAndInvert(ByVal target As Control, ByVal targetProperty As String, ByVal sourceProperty As String)
+			target.DataBindings.Add(New BoolInvertBinding(targetProperty, Controller, sourceProperty))
+		End Sub
+		Protected Overrides Sub OnLoad(ByVal e As EventArgs)
+			MyBase.OnLoad(e)
+			If Controller Is Nothing Then
+				Return
+			End If
+			Me.DataBindings.Add("Text", Controller, "Caption")
+			SubscribeControlsEvents()
+			LoadFormData(Controller.EditedAppointmentCopy)
+			RecalculateLayoutOfControlsAffectedByProgressPanel()
+		End Sub
+		Protected Overridable Function CreateController(ByVal control As SchedulerControl, ByVal apt As Appointment) As AppointmentFormController
+			Return New AppointmentFormController(control, apt)
+		End Function
+		Private Sub SubscribeControllerEvents(ByVal controller As AppointmentFormController)
+			If controller Is Nothing Then
+				Return
+			End If
+			AddHandler controller.PropertyChanged, AddressOf OnControllerPropertyChanged
+		End Sub
+		Private Sub OnControllerPropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
+			If e.PropertyName = "ReadOnly" Then
+				UpdateReadonly()
+			End If
+		End Sub
+		Protected Overridable Sub UpdateReadonly()
+			If Controller Is Nothing Then
+				Return
+			End If
+'INSTANT VB NOTE: The variable controls was renamed since Visual Basic does not handle local variables named the same as class members well:
+			Dim controls_Renamed As IList(Of Control) = GetAllControls(Me)
+'INSTANT VB NOTE: The variable control was renamed since Visual Basic does not handle local variables named the same as class members well:
+			For Each control_Renamed As Control In controls_Renamed
+				Dim editor As BaseEdit = TryCast(control_Renamed, BaseEdit)
+				If editor Is Nothing Then
+					Continue For
+				End If
+				editor.ReadOnly = Controller.ReadOnly
+			Next control_Renamed
+			Me.btnOk.Enabled = Not Controller.ReadOnly
+			Me.btnRecurrence.Enabled = Not Controller.ReadOnly
+		End Sub
 
-        End Sub
-        Public Overridable Function SaveFormData(ByVal appointment As Appointment) As Boolean
-            appointment.CustomFields("Contacts") = mxContacts.Text
-            Return True
+		Private Function GetAllControls(ByVal rootControl As Control) As List(Of Control)
+			Dim result As New List(Of Control)()
+'INSTANT VB NOTE: The variable control was renamed since Visual Basic does not handle local variables named the same as class members well:
+			For Each control_Renamed As Control In rootControl.Controls
+				result.Add(control_Renamed)
+				Dim childControls As IList(Of Control) = GetAllControls(control_Renamed)
+				result.AddRange(childControls)
+			Next control_Renamed
+			Return result
+		End Function
+		Protected Friend Overridable Sub LoadIcons()
+			Dim asm As System.Reflection.Assembly = GetType(SchedulerControl).Assembly
+			recurringIcon_Renamed = ResourceImageHelper.CreateIconFromResources(SchedulerIconNames.RecurringAppointment, asm)
+			normalIcon_Renamed = ResourceImageHelper.CreateIconFromResources(SchedulerIconNames.Appointment, asm)
+		End Sub
+		Protected Friend Overridable Sub SubscribeControlsEvents()
+			AddHandler edtEndDate.Validating, AddressOf OnEdtEndDateValidating
+			AddHandler edtEndDate.InvalidValue, AddressOf OnEdtEndDateInvalidValue
+			AddHandler edtEndTime.Validating, AddressOf OnEdtEndTimeValidating
+			AddHandler edtEndTime.InvalidValue, AddressOf OnEdtEndTimeInvalidValue
+			AddHandler cbReminder.InvalidValue, AddressOf OnCbReminderInvalidValue
+			AddHandler cbReminder.Validating, AddressOf OnCbReminderValidating
+		End Sub
+		Protected Friend Overridable Sub UnsubscribeControlsEvents()
+			RemoveHandler edtEndDate.Validating, AddressOf OnEdtEndDateValidating
+			RemoveHandler edtEndDate.InvalidValue, AddressOf OnEdtEndDateInvalidValue
+			RemoveHandler edtEndTime.Validating, AddressOf OnEdtEndTimeValidating
+			RemoveHandler edtEndTime.InvalidValue, AddressOf OnEdtEndTimeInvalidValue
+			RemoveHandler cbReminder.InvalidValue, AddressOf OnCbReminderInvalidValue
+			RemoveHandler cbReminder.Validating, AddressOf OnCbReminderValidating
+		End Sub
+		Private Sub OnBtnOkClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnOk.Click
+			OnOkButton()
+		End Sub
+		Protected Friend Overridable Sub OnEdtEndDateValidating(ByVal sender As Object, ByVal e As CancelEventArgs)
+			e.Cancel = Not IsValidInterval()
+			If Not e.Cancel Then
+				Me.edtEndDate.DataBindings("EditValue").WriteValue()
+			End If
+		End Sub
+		Protected Friend Overridable Sub OnEdtEndDateInvalidValue(ByVal sender As Object, ByVal e As InvalidValueExceptionEventArgs)
+			e.ErrorText = SchedulerLocalizer.GetString(SchedulerStringId.Msg_InvalidEndDate)
+		End Sub
+		Protected Friend Overridable Sub OnEdtEndTimeValidating(ByVal sender As Object, ByVal e As CancelEventArgs)
+			e.Cancel = Not IsValidInterval()
+			If Not e.Cancel Then
+				Me.edtEndTime.DataBindings("EditValue").WriteValue()
+			End If
+		End Sub
+		Protected Friend Overridable Sub OnEdtEndTimeInvalidValue(ByVal sender As Object, ByVal e As InvalidValueExceptionEventArgs)
+			e.ErrorText = SchedulerLocalizer.GetString(SchedulerStringId.Msg_InvalidEndDate)
+		End Sub
+		Protected Friend Overridable Function IsValidInterval() As Boolean
+			Return AppointmentFormControllerBase.ValidateInterval(edtStartDate.DateTime.Date, edtStartTime.Time.TimeOfDay, edtEndDate.DateTime.Date, edtEndTime.Time.TimeOfDay)
+		End Function
+		Protected Friend Overridable Sub OnOkButton()
+			If Not SaveFormData(Controller.EditedAppointmentCopy) Then
+				Return
+			End If
+			If Not Controller.IsConflictResolved() Then
+				ShowMessageBox(SchedulerLocalizer.GetString(SchedulerStringId.Msg_Conflict), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+				Return
+			End If
+			If Controller.IsAppointmentChanged() OrElse Controller.IsNewAppointment OrElse IsAppointmentChanged(Controller.EditedAppointmentCopy) Then
+				Controller.ApplyChanges()
+			End If
 
-        End Function
-        Public Overridable Function IsAppointmentChanged(ByVal appointment As Appointment) As Boolean
-            If _contacts = appointment.CustomFields("Contacts").ToString() Then
-                Return False
-            Else
-                Return True
-            End If
-        End Function
-        #End Region ' #CustomFieldData
+			Me.DialogResult = DialogResult.OK
+		End Sub
+		Protected Friend Overridable Function ShowMessageBox(ByVal text As String, ByVal caption As String, ByVal buttons As MessageBoxButtons, ByVal icon As MessageBoxIcon) As DialogResult
+			Return XtraMessageBox.Show(Me, text, caption, buttons, icon)
+		End Function
+		Private Sub OnBtnDeleteClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnDelete.Click
+			OnDeleteButton()
+		End Sub
+		Protected Friend Overridable Sub OnDeleteButton()
+			If IsNewAppointment Then
+				Return
+			End If
 
-        Public Overridable Sub SetMenuManager(ByVal menuManager As DevExpress.Utils.Menu.IDXMenuManager)
-            MenuManagerUtils.SetMenuManager(Controls, menuManager)
-            Me.menuManager_Renamed = menuManager
-        End Sub
-        Protected Friend Overridable Sub SetupPredefinedConstraints()
-            Me.tbProgress.Properties.Minimum = AppointmentProcessValues.Min
-            Me.tbProgress.Properties.Maximum = AppointmentProcessValues.Max
-            Me.tbProgress.Properties.SmallChange = AppointmentProcessValues.Step
-            Me.edtResources.Visible = True
-        End Sub
-        Protected Overridable Sub BindControllerToControls()
-            BindControllerToIcon()
-            BindProperties(Me.tbSubject, "Text", "Subject")
-            BindProperties(Me.tbLocation, "Text", "Location")
-            BindProperties(Me.tbDescription, "Text", "Description")
-            BindProperties(Me.edtShowTimeAs, "Status", "Status")
-            BindProperties(Me.edtStartDate, "EditValue", "DisplayStartDate")
-            BindProperties(Me.edtStartDate, "Enabled", "IsDateTimeEditable")
-            BindProperties(Me.edtStartTime, "EditValue", "DisplayStartTime")
-            BindProperties(Me.edtStartTime, "Visible", "IsTimeVisible")
-            BindProperties(Me.edtStartTime, "Enabled", "IsTimeVisible")
-            BindProperties(Me.edtEndDate, "EditValue", "DisplayEndDate", DataSourceUpdateMode.Never)
-            BindProperties(Me.edtEndDate, "Enabled", "IsDateTimeEditable", DataSourceUpdateMode.Never)
-            BindProperties(Me.edtEndTime, "EditValue", "DisplayEndTime", DataSourceUpdateMode.Never)
-            BindProperties(Me.edtEndTime, "Visible", "IsTimeVisible", DataSourceUpdateMode.Never)
-            BindProperties(Me.edtEndTime, "Enabled", "IsTimeVisible", DataSourceUpdateMode.Never)
-            BindProperties(Me.chkAllDay, "Checked", "AllDay")
-            BindProperties(Me.chkAllDay, "Enabled", "IsDateTimeEditable")
+			Controller.DeleteAppointment()
 
-            BindProperties(Me.edtResource, "ResourceId", "ResourceId")
-            BindProperties(Me.edtResource, "Enabled", "CanEditResource")
-            BindToBoolPropertyAndInvert(Me.edtResource, "Visible", "ResourceSharing")
+			DialogResult = DialogResult.Abort
+			Close()
+		End Sub
+		Private Sub OnBtnRecurrenceClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnRecurrence.Click
+			OnRecurrenceButton()
+		End Sub
+		Protected Friend Overridable Sub OnRecurrenceButton()
+			If Not Controller.ShouldShowRecurrenceButton Then
+				Return
+			End If
 
-            BindProperties(Me.edtResources, "ResourceIds", "ResourceIds")
-            BindProperties(Me.edtResources, "Visible", "ResourceSharing")
-            BindProperties(Me.edtResources, "Enabled", "CanEditResource")
-            BindProperties(Me.lblResource, "Enabled", "CanEditResource")
+			Dim patternCopy As Appointment = Controller.PrepareToRecurrenceEdit()
 
-            BindProperties(Me.edtLabel, "Label", "Label")
-            BindProperties(Me.chkReminder, "Enabled", "ReminderVisible")
-            BindProperties(Me.chkReminder, "Visible", "ReminderVisible")
-            BindProperties(Me.chkReminder, "Checked", "HasReminder")
-            BindProperties(Me.cbReminder, "Enabled", "HasReminder")
-            BindProperties(Me.cbReminder, "Visible", "ReminderVisible")
-            BindProperties(Me.cbReminder, "Duration", "ReminderTimeBeforeStart")
-
-            BindProperties(Me.tbProgress, "Value", "PercentComplete")
-            BindProperties(Me.lblPercentCompleteValue, "Text", "PercentComplete", AddressOf ObjectToStringConverter)
-            BindProperties(Me.progressPanel, "Visible", "ShouldEditTaskProgress")
-            BindToBoolPropertyAndInvert(Me.btnOk, "Enabled", "ReadOnly")
-            BindToBoolPropertyAndInvert(Me.btnRecurrence, "Enabled", "ReadOnly")
-            BindProperties(Me.btnDelete, "Enabled", "CanDeleteAppointment")
-            BindProperties(Me.btnRecurrence, "Visible", "ShouldShowRecurrenceButton")
-        End Sub
-        Protected Overridable Sub BindControllerToIcon()
-            Dim binding As New Binding("Icon", Controller, "AppointmentType")
-            AddHandler binding.Format, AddressOf AppointmentTypeToIconConverter
-            DataBindings.Add(binding)
-        End Sub
-        Protected Overridable Sub ObjectToStringConverter(ByVal o As Object, ByVal e As ConvertEventArgs)
-            e.Value = e.Value.ToString()
-        End Sub
-        Protected Overridable Sub AppointmentTypeToIconConverter(ByVal o As Object, ByVal e As ConvertEventArgs)
-            Dim type As AppointmentType = DirectCast(e.Value, AppointmentType)
-            If type = AppointmentType.Pattern Then
-                e.Value = RecurringIcon
-            Else
-                e.Value = NormalIcon
-            End If
-        End Sub
-        Protected Overridable Sub BindProperties(ByVal target As Control, ByVal targetProperty As String, ByVal sourceProperty As String)
-            BindProperties(target, targetProperty, sourceProperty, DataSourceUpdateMode.OnPropertyChanged)
-        End Sub
-        Protected Overridable Sub BindProperties(ByVal target As Control, ByVal targetProperty As String, ByVal sourceProperty As String, ByVal updateMode As DataSourceUpdateMode)
-            target.DataBindings.Add(targetProperty, Controller, sourceProperty, True, updateMode)
-        End Sub
-        Protected Overridable Sub BindProperties(ByVal target As Control, ByVal targetProperty As String, ByVal sourceProperty As String, ByVal objectToStringConverter As ConvertEventHandler)
-            Dim binding As New Binding(targetProperty, Controller, sourceProperty, True)
-            AddHandler binding.Format, objectToStringConverter
-            target.DataBindings.Add(binding)
-        End Sub
-        Protected Overridable Sub BindToBoolPropertyAndInvert(ByVal target As Control, ByVal targetProperty As String, ByVal sourceProperty As String)
-            target.DataBindings.Add(New BoolInvertBinding(targetProperty, Controller, sourceProperty))
-        End Sub
-        Protected Overrides Sub OnLoad(ByVal e As EventArgs)
-            MyBase.OnLoad(e)
-            If Controller Is Nothing Then
-                Return
-            End If
-            Me.DataBindings.Add("Text", Controller, "Caption")
-            SubscribeControlsEvents()
-            LoadFormData(Controller.EditedAppointmentCopy)
-            RecalculateLayoutOfControlsAffectedByProgressPanel()
-        End Sub
-        Protected Overridable Function CreateController(ByVal control As SchedulerControl, ByVal apt As Appointment) As AppointmentFormController
-            Return New AppointmentFormController(control, apt)
-        End Function
-        Private Sub SubscribeControllerEvents(ByVal controller As AppointmentFormController)
-            If controller Is Nothing Then
-                Return
-            End If
-            AddHandler controller.PropertyChanged, AddressOf OnControllerPropertyChanged
-        End Sub
-        Private Sub OnControllerPropertyChanged(ByVal sender As Object, ByVal e As PropertyChangedEventArgs)
-            If e.PropertyName = "ReadOnly" Then
-                UpdateReadonly()
-            End If
-        End Sub
-        Protected Overridable Sub UpdateReadonly()
-            If Controller Is Nothing Then
-                Return
-            End If
-            Dim controls As IList(Of Control) = GetAllControls(Me)
-
-            For Each control_Renamed As Control In controls
-                Dim editor As BaseEdit = TryCast(control_Renamed, BaseEdit)
-                If editor Is Nothing Then
-                    Continue For
-                End If
-                editor.ReadOnly = Controller.ReadOnly
-            Next control_Renamed
-            Me.btnOk.Enabled = Not Controller.ReadOnly
-            Me.btnRecurrence.Enabled = Not Controller.ReadOnly
-        End Sub
-
-        Private Function GetAllControls(ByVal rootControl As Control) As List(Of Control)
-            Dim result As New List(Of Control)()
-
-            For Each control_Renamed As Control In rootControl.Controls
-                result.Add(control_Renamed)
-                Dim childControls As IList(Of Control) = GetAllControls(control_Renamed)
-                result.AddRange(childControls)
-            Next control_Renamed
-            Return result
-        End Function
-        Protected Friend Overridable Sub LoadIcons()
-            Dim asm As System.Reflection.Assembly = GetType(SchedulerControl).Assembly
-            recurringIcon_Renamed = ResourceImageHelper.CreateIconFromResources(SchedulerIconNames.RecurringAppointment, asm)
-            normalIcon_Renamed = ResourceImageHelper.CreateIconFromResources(SchedulerIconNames.Appointment, asm)
-        End Sub
-        Protected Friend Overridable Sub SubscribeControlsEvents()
-            AddHandler edtEndDate.Validating, AddressOf OnEdtEndDateValidating
-            AddHandler edtEndDate.InvalidValue, AddressOf OnEdtEndDateInvalidValue
-            AddHandler edtEndTime.Validating, AddressOf OnEdtEndTimeValidating
-            AddHandler edtEndTime.InvalidValue, AddressOf OnEdtEndTimeInvalidValue
-            AddHandler cbReminder.InvalidValue, AddressOf OnCbReminderInvalidValue
-            AddHandler cbReminder.Validating, AddressOf OnCbReminderValidating
-        End Sub
-        Protected Friend Overridable Sub UnsubscribeControlsEvents()
-            RemoveHandler edtEndDate.Validating, AddressOf OnEdtEndDateValidating
-            RemoveHandler edtEndDate.InvalidValue, AddressOf OnEdtEndDateInvalidValue
-            RemoveHandler edtEndTime.Validating, AddressOf OnEdtEndTimeValidating
-            RemoveHandler edtEndTime.InvalidValue, AddressOf OnEdtEndTimeInvalidValue
-            RemoveHandler cbReminder.InvalidValue, AddressOf OnCbReminderInvalidValue
-            RemoveHandler cbReminder.Validating, AddressOf OnCbReminderValidating
-        End Sub
-        Private Sub OnBtnOkClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnOk.Click
-            OnOkButton()
-        End Sub
-        Protected Friend Overridable Sub OnEdtEndDateValidating(ByVal sender As Object, ByVal e As CancelEventArgs)
-            e.Cancel = Not IsValidInterval()
-            If Not e.Cancel Then
-                Me.edtEndDate.DataBindings("EditValue").WriteValue()
-            End If
-        End Sub
-        Protected Friend Overridable Sub OnEdtEndDateInvalidValue(ByVal sender As Object, ByVal e As InvalidValueExceptionEventArgs)
-            e.ErrorText = SchedulerLocalizer.GetString(SchedulerStringId.Msg_InvalidEndDate)
-        End Sub
-        Protected Friend Overridable Sub OnEdtEndTimeValidating(ByVal sender As Object, ByVal e As CancelEventArgs)
-            e.Cancel = Not IsValidInterval()
-            If Not e.Cancel Then
-                Me.edtEndTime.DataBindings("EditValue").WriteValue()
-            End If
-        End Sub
-        Protected Friend Overridable Sub OnEdtEndTimeInvalidValue(ByVal sender As Object, ByVal e As InvalidValueExceptionEventArgs)
-            e.ErrorText = SchedulerLocalizer.GetString(SchedulerStringId.Msg_InvalidEndDate)
-        End Sub
-        Protected Friend Overridable Function IsValidInterval() As Boolean
-            Return AppointmentFormControllerBase.ValidateInterval(edtStartDate.DateTime.Date, edtStartTime.Time.TimeOfDay, edtEndDate.DateTime.Date, edtEndTime.Time.TimeOfDay)
-        End Function
-        Protected Friend Overridable Sub OnOkButton()
-            If Not SaveFormData(Controller.EditedAppointmentCopy) Then
-                Return
-            End If
-            If Not Controller.IsConflictResolved() Then
-                ShowMessageBox(SchedulerLocalizer.GetString(SchedulerStringId.Msg_Conflict), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Return
-            End If
-            If Controller.IsAppointmentChanged() OrElse Controller.IsNewAppointment OrElse IsAppointmentChanged(Controller.EditedAppointmentCopy) Then
-                Controller.ApplyChanges()
-            End If
-
-            Me.DialogResult = DialogResult.OK
-        End Sub
-        Protected Friend Overridable Function ShowMessageBox(ByVal text As String, ByVal caption As String, ByVal buttons As MessageBoxButtons, ByVal icon As MessageBoxIcon) As DialogResult
-            Return XtraMessageBox.Show(Me, text, caption, buttons, icon)
-        End Function
-        Private Sub OnBtnDeleteClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnDelete.Click
-            OnDeleteButton()
-        End Sub
-        Protected Friend Overridable Sub OnDeleteButton()
-            If IsNewAppointment Then
-                Return
-            End If
-
-            Controller.DeleteAppointment()
-
-            DialogResult = DialogResult.Abort
-            Close()
-        End Sub
-        Private Sub OnBtnRecurrenceClick(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnRecurrence.Click
-            OnRecurrenceButton()
-        End Sub
-        Protected Friend Overridable Sub OnRecurrenceButton()
-            If Not Controller.ShouldShowRecurrenceButton Then
-                Return
-            End If
-
-            Dim patternCopy As Appointment = Controller.PrepareToRecurrenceEdit()
-
-            Dim result As DialogResult
+			Dim result As DialogResult
             Using form As Form = CreateAppointmentRecurrenceForm(patternCopy, Control.OptionsView.FirstDayOfWeek)
                 result = ShowRecurrenceForm(form)
             End Using
 
             If result = DialogResult.Abort Then
-                Controller.RemoveRecurrence()
-            ElseIf result = DialogResult.OK Then
-                Controller.ApplyRecurrence(patternCopy)
-            End If
-        End Sub
-        Protected Overridable Function ShowRecurrenceForm(ByVal form As Form) As DialogResult
-            Return FormTouchUIAdapter.ShowDialog(form, Me)
-        End Function
-        Protected Friend Overridable Function CreateAppointmentRecurrenceForm(ByVal patternCopy As Appointment, ByVal firstDayOfWeek As FirstDayOfWeek) As Form
-            Dim form As New AppointmentRecurrenceForm(patternCopy, firstDayOfWeek, Controller)
-            form.SetMenuManager(MenuManager)
-            form.LookAndFeel.ParentLookAndFeel = LookAndFeel
-            form.ShowExceptionsRemoveMsgBox = controller_Renamed.AreExceptionsPresent()
-            Return form
-        End Function
-        Friend Sub OnAppointmentFormActivated(ByVal sender As Object, ByVal e As EventArgs) Handles MyBase.Activated
-            If openRecurrenceForm_Renamed Then
-                openRecurrenceForm_Renamed = False
-                OnRecurrenceButton()
-            End If
-        End Sub
-        Protected Friend Overridable Sub OnCbReminderValidating(ByVal sender As Object, ByVal e As CancelEventArgs)
-            Dim span As TimeSpan = cbReminder.Duration
-            e.Cancel = (span = TimeSpan.MinValue) OrElse (span.Ticks < 0)
-            If Not e.Cancel Then
-                Me.cbReminder.DataBindings("Duration").WriteValue()
-            End If
-        End Sub
-        Protected Friend Overridable Sub OnCbReminderInvalidValue(ByVal sender As Object, ByVal e As InvalidValueExceptionEventArgs)
-            e.ErrorText = SchedulerLocalizer.GetString(SchedulerStringId.Msg_InvalidReminderTimeBeforeStart)
-        End Sub
-        Protected Friend Overridable Sub RecalculateLayoutOfControlsAffectedByProgressPanel()
-            If progressPanel.Visible Then
-                Return
-            End If
-            Dim intDeltaY As Integer = progressPanel.Height
-            tbDescription.Location = New Point(tbDescription.Location.X, tbDescription.Location.Y - intDeltaY)
-            tbDescription.Size = New Size(tbDescription.Size.Width, tbDescription.Size.Height + intDeltaY)
-        End Sub
-    End Class
+				Controller.RemoveRecurrence()
+			ElseIf result = DialogResult.OK Then
+				Controller.ApplyRecurrence(patternCopy)
+			End If
+		End Sub
+		Protected Overridable Function ShowRecurrenceForm(ByVal form As Form) As DialogResult
+			Return FormTouchUIAdapter.ShowDialog(form, Me)
+		End Function
+		Protected Friend Overridable Function CreateAppointmentRecurrenceForm(ByVal patternCopy As Appointment, ByVal firstDayOfWeek As FirstDayOfWeek) As Form
+			Dim form As New AppointmentRecurrenceForm(patternCopy, firstDayOfWeek, Controller)
+			form.SetMenuManager(MenuManager)
+			form.LookAndFeel.ParentLookAndFeel = LookAndFeel
+			form.ShowExceptionsRemoveMsgBox = controller_Renamed.AreExceptionsPresent()
+			Return form
+		End Function
+		Friend Sub OnAppointmentFormActivated(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Activated
+			If openRecurrenceForm_Renamed Then
+				openRecurrenceForm_Renamed = False
+				OnRecurrenceButton()
+			End If
+		End Sub
+		Protected Friend Overridable Sub OnCbReminderValidating(ByVal sender As Object, ByVal e As CancelEventArgs)
+			Dim span As TimeSpan = cbReminder.Duration
+			e.Cancel = (span = TimeSpan.MinValue) OrElse (span.Ticks < 0)
+			If Not e.Cancel Then
+				Me.cbReminder.DataBindings("Duration").WriteValue()
+			End If
+		End Sub
+		Protected Friend Overridable Sub OnCbReminderInvalidValue(ByVal sender As Object, ByVal e As InvalidValueExceptionEventArgs)
+			e.ErrorText = SchedulerLocalizer.GetString(SchedulerStringId.Msg_InvalidReminderTimeBeforeStart)
+		End Sub
+		Protected Friend Overridable Sub RecalculateLayoutOfControlsAffectedByProgressPanel()
+			If progressPanel.Visible Then
+				Return
+			End If
+			Dim intDeltaY As Integer = progressPanel.Height
+			tbDescription.Location = New Point(tbDescription.Location.X, tbDescription.Location.Y - intDeltaY)
+			tbDescription.Size = New Size(tbDescription.Size.Width, tbDescription.Size.Height + intDeltaY)
+		End Sub
+	End Class
 End Namespace

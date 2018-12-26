@@ -22,9 +22,9 @@ namespace SchedulerDbExample {
             schedulerControl1.DayView.TimeIndicatorDisplayOptions.ShowOverAppointment = true;
 
 
-            this.schedulerStorage1.AppointmentsChanged += OnAppointmentChangedInsertedDeleted;
-            this.schedulerStorage1.AppointmentsInserted += OnAppointmentChangedInsertedDeleted;
-            this.schedulerStorage1.AppointmentsDeleted += OnAppointmentChangedInsertedDeleted;
+            this.schedulerDataStorage1.AppointmentsChanged += OnAppointmentChangedInsertedDeleted;
+            this.schedulerDataStorage1.AppointmentsInserted += OnAppointmentChangedInsertedDeleted;
+            this.schedulerDataStorage1.AppointmentsDeleted += OnAppointmentChangedInsertedDeleted;
         }
 
         private void OnAppointmentChangedInsertedDeleted(object sender, PersistentObjectsEventArgs e) {

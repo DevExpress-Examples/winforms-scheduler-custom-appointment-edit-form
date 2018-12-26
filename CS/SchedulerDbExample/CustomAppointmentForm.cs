@@ -38,7 +38,7 @@ namespace SchedulerDbExample {
         }
         public CustomAppointmentForm(SchedulerControl control, Appointment apt, bool openRecurrenceForm) {
             Guard.ArgumentNotNull(control, "control");
-            Guard.ArgumentNotNull(control.Storage, "control.Storage");
+            Guard.ArgumentNotNull(control.DataStorage, "control.DataStorage");
             Guard.ArgumentNotNull(apt, "apt");
 
             this.openRecurrenceForm = openRecurrenceForm;

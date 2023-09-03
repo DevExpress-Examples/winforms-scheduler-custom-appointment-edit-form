@@ -1,22 +1,26 @@
-﻿Imports DevExpress.XtraScheduler.UI
+Imports DevExpress.XtraScheduler.UI
+
 Namespace SchedulerDbExample
-    Partial Public Class CustomAppointmentForm
+
+    Partial Class CustomAppointmentForm
+
         Protected Overrides Sub Dispose(ByVal disposing As Boolean)
             If disposing Then
-                If components IsNot Nothing Then
-                    components.Dispose()
+                If Me.components IsNot Nothing Then
+                    Me.components.Dispose()
                 End If
             End If
+
             MyBase.Dispose(disposing)
         End Sub
 
-        #Region "Designer generated code"
+#Region "Designer generated code"
         ''' <summary>
         ''' Required method for Designer support - do not modify
         ''' the contents of this method with the code editor.
         ''' </summary>
         Private Sub InitializeComponent()
-            Dim resources As New System.ComponentModel.ComponentResourceManager(GetType(CustomAppointmentForm))
+            Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(SchedulerDbExample.CustomAppointmentForm))
             Me.lblSubject = New DevExpress.XtraEditors.LabelControl()
             Me.lblLocation = New DevExpress.XtraEditors.LabelControl()
             Me.tbSubject = New DevExpress.XtraEditors.TextEdit()
@@ -49,29 +53,29 @@ Namespace SchedulerDbExample
             Me.edtShowTimeAs = New DevExpress.XtraScheduler.UI.AppointmentStatusEdit()
             Me.mxContacts = New DevExpress.XtraEditors.MemoExEdit()
             Me.labelControl1 = New DevExpress.XtraEditors.LabelControl()
-            DirectCast(Me.tbSubject.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.chkAllDay.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtStartDate.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtStartDate.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtEndDate.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtEndDate.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.chkReminder.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.tbDescription.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.tbLocation.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.panel1, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.tbSubject.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.chkAllDay.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtStartDate.Properties.CalendarTimeProperties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtStartDate.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtEndDate.Properties.CalendarTimeProperties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtEndDate.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.chkReminder.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.tbDescription.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.tbLocation.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.panel1), System.ComponentModel.ISupportInitialize).BeginInit()
             Me.panel1.SuspendLayout()
-            DirectCast(Me.edtResource.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtResources.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtResources.ResourcesCheckedListBoxControl, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.cbReminder.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtLabel.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtResource.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtResources.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtResources.ResourcesCheckedListBoxControl), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.cbReminder.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtLabel.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
             Me.progressPanel.SuspendLayout()
-            DirectCast(Me.tbProgress, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.tbProgress.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtStartTime.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtEndTime.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.edtShowTimeAs.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
-            DirectCast(Me.mxContacts.Properties, System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.tbProgress), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.tbProgress.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtStartTime.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtEndTime.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.edtShowTimeAs.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
+            CType((Me.mxContacts.Properties), System.ComponentModel.ISupportInitialize).BeginInit()
             Me.SuspendLayout()
             ' 
             ' lblSubject
@@ -93,7 +97,7 @@ Namespace SchedulerDbExample
             ' lblLabel
             ' 
             resources.ApplyResources(Me.lblLabel, "lblLabel")
-            Me.lblLabel.Appearance.BackColor = (DirectCast(resources.GetObject("lblLabel.Appearance.BackColor"), System.Drawing.Color))
+            Me.lblLabel.Appearance.BackColor = CType((resources.GetObject("lblLabel.Appearance.BackColor")), System.Drawing.Color)
             Me.lblLabel.Name = "lblLabel"
             ' 
             ' lblStartTime
@@ -124,6 +128,7 @@ Namespace SchedulerDbExample
             ' 
             resources.ApplyResources(Me.btnOk, "btnOk")
             Me.btnOk.Name = "btnOk"
+            AddHandler Me.btnOk.Click, New System.EventHandler(AddressOf Me.OnBtnOkClick)
             ' 
             ' btnCancel
             ' 
@@ -137,29 +142,31 @@ Namespace SchedulerDbExample
             resources.ApplyResources(Me.btnDelete, "btnDelete")
             Me.btnDelete.CausesValidation = False
             Me.btnDelete.Name = "btnDelete"
+            AddHandler Me.btnDelete.Click, New System.EventHandler(AddressOf Me.OnBtnDeleteClick)
             ' 
             ' btnRecurrence
             ' 
             resources.ApplyResources(Me.btnRecurrence, "btnRecurrence")
             Me.btnRecurrence.Name = "btnRecurrence"
+            AddHandler Me.btnRecurrence.Click, New System.EventHandler(AddressOf Me.OnBtnRecurrenceClick)
             ' 
             ' edtStartDate
             ' 
             resources.ApplyResources(Me.edtStartDate, "edtStartDate")
             Me.edtStartDate.Name = "edtStartDate"
             Me.edtStartDate.Properties.AccessibleName = resources.GetString("edtStartDate.Properties.AccessibleName")
-            Me.edtStartDate.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton((DirectCast(resources.GetObject("edtStartDate.Properties.Buttons"), DevExpress.XtraEditors.Controls.ButtonPredefines)))})
-            Me.edtStartDate.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton()})
-            Me.edtStartDate.Properties.MaxValue = New Date(4000, 1, 1, 0, 0, 0, 0)
+            Me.edtStartDate.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(CType((resources.GetObject("edtStartDate.Properties.Buttons")), DevExpress.XtraEditors.Controls.ButtonPredefines))})
+            Me.edtStartDate.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton()})
+            Me.edtStartDate.Properties.MaxValue = New System.DateTime(4000, 1, 1, 0, 0, 0, 0)
             ' 
             ' edtEndDate
             ' 
             resources.ApplyResources(Me.edtEndDate, "edtEndDate")
             Me.edtEndDate.Name = "edtEndDate"
             Me.edtEndDate.Properties.AccessibleName = resources.GetString("edtEndDate.Properties.AccessibleName")
-            Me.edtEndDate.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton((DirectCast(resources.GetObject("edtEndDate.Properties.Buttons"), DevExpress.XtraEditors.Controls.ButtonPredefines)))})
-            Me.edtEndDate.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton()})
-            Me.edtEndDate.Properties.MaxValue = New Date(4000, 1, 1, 0, 0, 0, 0)
+            Me.edtEndDate.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(CType((resources.GetObject("edtEndDate.Properties.Buttons")), DevExpress.XtraEditors.Controls.ButtonPredefines))})
+            Me.edtEndDate.Properties.CalendarTimeProperties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton()})
+            Me.edtEndDate.Properties.MaxValue = New System.DateTime(4000, 1, 1, 0, 0, 0, 0)
             ' 
             ' chkReminder
             ' 
@@ -206,26 +213,26 @@ Namespace SchedulerDbExample
             Me.edtResource.Name = "edtResource"
             Me.edtResource.Properties.AccessibleName = resources.GetString("edtResource.Properties.AccessibleName")
             Me.edtResource.Properties.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox
-            Me.edtResource.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton((DirectCast(resources.GetObject("edtResource.Properties.Buttons"), DevExpress.XtraEditors.Controls.ButtonPredefines)))})
+            Me.edtResource.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(CType((resources.GetObject("edtResource.Properties.Buttons")), DevExpress.XtraEditors.Controls.ButtonPredefines))})
             ' 
             ' edtResources
             ' 
             resources.ApplyResources(Me.edtResources, "edtResources")
             Me.edtResources.Name = "edtResources"
-            Me.edtResources.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton((DirectCast(resources.GetObject("edtResources.Properties.Buttons"), DevExpress.XtraEditors.Controls.ButtonPredefines)))})
+            Me.edtResources.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(CType((resources.GetObject("edtResources.Properties.Buttons")), DevExpress.XtraEditors.Controls.ButtonPredefines))})
             ' 
             ' 
             ' 
-            Me.edtResources.ResourcesCheckedListBoxControl.Location = (DirectCast(resources.GetObject("edtResources.ResourcesCheckedListBoxControl.Location"), System.Drawing.Point))
+            Me.edtResources.ResourcesCheckedListBoxControl.Location = CType((resources.GetObject("edtResources.ResourcesCheckedListBoxControl.Location")), System.Drawing.Point)
             Me.edtResources.ResourcesCheckedListBoxControl.Name = ""
-            Me.edtResources.ResourcesCheckedListBoxControl.TabIndex = (DirectCast(resources.GetObject("edtResources.ResourcesCheckedListBoxControl.TabIndex"), Integer))
+            Me.edtResources.ResourcesCheckedListBoxControl.TabIndex =(CInt((resources.GetObject("edtResources.ResourcesCheckedListBoxControl.TabIndex"))))
             ' 
             ' cbReminder
             ' 
             resources.ApplyResources(Me.cbReminder, "cbReminder")
             Me.cbReminder.Name = "cbReminder"
             Me.cbReminder.Properties.AccessibleName = resources.GetString("cbReminder.Properties.AccessibleName")
-            Me.cbReminder.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton((DirectCast(resources.GetObject("cbReminder.Properties.Buttons"), DevExpress.XtraEditors.Controls.ButtonPredefines)))})
+            Me.cbReminder.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(CType((resources.GetObject("cbReminder.Properties.Buttons")), DevExpress.XtraEditors.Controls.ButtonPredefines))})
             Me.cbReminder.Properties.DisabledStateText = ""
             Me.cbReminder.Properties.ShowEmptyItem = False
             ' 
@@ -235,7 +242,7 @@ Namespace SchedulerDbExample
             Me.edtLabel.Name = "edtLabel"
             Me.edtLabel.Properties.AccessibleName = resources.GetString("edtLabel.Properties.AccessibleName")
             Me.edtLabel.Properties.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox
-            Me.edtLabel.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton((DirectCast(resources.GetObject("edtLabel.Properties.Buttons"), DevExpress.XtraEditors.Controls.ButtonPredefines)))})
+            Me.edtLabel.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(CType((resources.GetObject("edtLabel.Properties.Buttons")), DevExpress.XtraEditors.Controls.ButtonPredefines))})
             ' 
             ' progressPanel
             ' 
@@ -259,13 +266,13 @@ Namespace SchedulerDbExample
             ' lblPercentCompleteValue
             ' 
             resources.ApplyResources(Me.lblPercentCompleteValue, "lblPercentCompleteValue")
-            Me.lblPercentCompleteValue.Appearance.BackColor = (DirectCast(resources.GetObject("lblPercentCompleteValue.Appearance.BackColor"), System.Drawing.Color))
+            Me.lblPercentCompleteValue.Appearance.BackColor = CType((resources.GetObject("lblPercentCompleteValue.Appearance.BackColor")), System.Drawing.Color)
             Me.lblPercentCompleteValue.Name = "lblPercentCompleteValue"
             ' 
             ' lblPercentComplete
             ' 
             resources.ApplyResources(Me.lblPercentComplete, "lblPercentComplete")
-            Me.lblPercentComplete.Appearance.BackColor = (DirectCast(resources.GetObject("lblPercentComplete.Appearance.BackColor"), System.Drawing.Color))
+            Me.lblPercentComplete.Appearance.BackColor = CType((resources.GetObject("lblPercentComplete.Appearance.BackColor")), System.Drawing.Color)
             Me.lblPercentComplete.Name = "lblPercentComplete"
             ' 
             ' edtStartTime
@@ -273,14 +280,14 @@ Namespace SchedulerDbExample
             resources.ApplyResources(Me.edtStartTime, "edtStartTime")
             Me.edtStartTime.Name = "edtStartTime"
             Me.edtStartTime.Properties.AccessibleName = resources.GetString("edtStartTime.Properties.AccessibleName")
-            Me.edtStartTime.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton()})
+            Me.edtStartTime.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton()})
             ' 
             ' edtEndTime
             ' 
             resources.ApplyResources(Me.edtEndTime, "edtEndTime")
             Me.edtEndTime.Name = "edtEndTime"
             Me.edtEndTime.Properties.AccessibleName = resources.GetString("edtEndTime.Properties.AccessibleName")
-            Me.edtEndTime.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton()})
+            Me.edtEndTime.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton()})
             ' 
             ' edtShowTimeAs
             ' 
@@ -288,13 +295,13 @@ Namespace SchedulerDbExample
             Me.edtShowTimeAs.Name = "edtShowTimeAs"
             Me.edtShowTimeAs.Properties.AccessibleName = resources.GetString("edtShowTimeAs.Properties.AccessibleName")
             Me.edtShowTimeAs.Properties.AccessibleRole = System.Windows.Forms.AccessibleRole.ComboBox
-            Me.edtShowTimeAs.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton((DirectCast(resources.GetObject("edtShowTimeAs.Properties.Buttons"), DevExpress.XtraEditors.Controls.ButtonPredefines)))})
+            Me.edtShowTimeAs.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(CType((resources.GetObject("edtShowTimeAs.Properties.Buttons")), DevExpress.XtraEditors.Controls.ButtonPredefines))})
             ' 
             ' mxContacts
             ' 
             resources.ApplyResources(Me.mxContacts, "mxContacts")
             Me.mxContacts.Name = "mxContacts"
-            Me.mxContacts.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() { New DevExpress.XtraEditors.Controls.EditorButton((DirectCast(resources.GetObject("memoExEdit1.Properties.Buttons"), DevExpress.XtraEditors.Controls.ButtonPredefines)))})
+            Me.mxContacts.Properties.Buttons.AddRange(New DevExpress.XtraEditors.Controls.EditorButton() {New DevExpress.XtraEditors.Controls.EditorButton(CType((resources.GetObject("memoExEdit1.Properties.Buttons")), DevExpress.XtraEditors.Controls.ButtonPredefines))})
             ' 
             ' labelControl1
             ' 
@@ -331,69 +338,101 @@ Namespace SchedulerDbExample
             Me.Controls.Add(Me.edtShowTimeAs)
             Me.Name = "CustomAppointmentForm"
             Me.ShowInTaskbar = False
-            DirectCast(Me.tbSubject.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.chkAllDay.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtStartDate.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtStartDate.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtEndDate.Properties.CalendarTimeProperties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtEndDate.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.chkReminder.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.tbDescription.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.tbLocation.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.panel1, System.ComponentModel.ISupportInitialize).EndInit()
+            AddHandler Me.Activated, New System.EventHandler(AddressOf Me.OnAppointmentFormActivated)
+            CType((Me.tbSubject.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.chkAllDay.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtStartDate.Properties.CalendarTimeProperties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtStartDate.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtEndDate.Properties.CalendarTimeProperties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtEndDate.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.chkReminder.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.tbDescription.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.tbLocation.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.panel1), System.ComponentModel.ISupportInitialize).EndInit()
             Me.panel1.ResumeLayout(False)
             Me.panel1.PerformLayout()
-            DirectCast(Me.edtResource.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtResources.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtResources.ResourcesCheckedListBoxControl, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.cbReminder.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtLabel.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtResource.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtResources.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtResources.ResourcesCheckedListBoxControl), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.cbReminder.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtLabel.Properties), System.ComponentModel.ISupportInitialize).EndInit()
             Me.progressPanel.ResumeLayout(False)
             Me.progressPanel.PerformLayout()
-            DirectCast(Me.tbProgress.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.tbProgress, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtStartTime.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtEndTime.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.edtShowTimeAs.Properties, System.ComponentModel.ISupportInitialize).EndInit()
-            DirectCast(Me.mxContacts.Properties, System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.tbProgress.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.tbProgress), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtStartTime.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtEndTime.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.edtShowTimeAs.Properties), System.ComponentModel.ISupportInitialize).EndInit()
+            CType((Me.mxContacts.Properties), System.ComponentModel.ISupportInitialize).EndInit()
             Me.ResumeLayout(False)
             Me.PerformLayout()
-
         End Sub
-        #End Region
 
+#End Region
         Protected lblSubject As DevExpress.XtraEditors.LabelControl
+
         Protected lblLocation As DevExpress.XtraEditors.LabelControl
+
         Protected lblLabel As DevExpress.XtraEditors.LabelControl
+
         Protected lblStartTime As DevExpress.XtraEditors.LabelControl
+
         Protected lblEndTime As DevExpress.XtraEditors.LabelControl
+
         Protected lblShowTimeAs As DevExpress.XtraEditors.LabelControl
+
         Protected chkAllDay As DevExpress.XtraEditors.CheckEdit
-        Protected WithEvents btnOk As DevExpress.XtraEditors.SimpleButton
+
+        Protected btnOk As DevExpress.XtraEditors.SimpleButton
+
         Protected btnCancel As DevExpress.XtraEditors.SimpleButton
-        Protected WithEvents btnDelete As DevExpress.XtraEditors.SimpleButton
-        Protected WithEvents btnRecurrence As DevExpress.XtraEditors.SimpleButton
+
+        Protected btnDelete As DevExpress.XtraEditors.SimpleButton
+
+        Protected btnRecurrence As DevExpress.XtraEditors.SimpleButton
+
         Protected edtStartDate As DevExpress.XtraEditors.DateEdit
+
         Protected edtEndDate As DevExpress.XtraEditors.DateEdit
+
         Protected edtStartTime As DevExpress.XtraScheduler.UI.SchedulerTimeEdit
+
         Protected edtEndTime As DevExpress.XtraScheduler.UI.SchedulerTimeEdit
+
         Protected edtLabel As DevExpress.XtraScheduler.UI.AppointmentLabelEdit
+
         Protected edtShowTimeAs As DevExpress.XtraScheduler.UI.AppointmentStatusEdit
+
         Protected tbSubject As DevExpress.XtraEditors.TextEdit
+
         Protected edtResource As DevExpress.XtraScheduler.UI.AppointmentResourceEdit
+
         Protected lblResource As DevExpress.XtraEditors.LabelControl
+
         Protected edtResources As DevExpress.XtraScheduler.UI.AppointmentResourcesEdit
+
         Protected chkReminder As DevExpress.XtraEditors.CheckEdit
+
         Protected tbDescription As DevExpress.XtraEditors.MemoEdit
+
         Protected cbReminder As DevExpress.XtraScheduler.UI.DurationEdit
+
         Private components As System.ComponentModel.IContainer = Nothing
+
         Protected tbLocation As DevExpress.XtraEditors.TextEdit
+
         Protected panel1 As DevExpress.XtraEditors.PanelControl
+
         Protected progressPanel As System.Windows.Forms.Panel
+
         Protected tbProgress As DevExpress.XtraEditors.TrackBarControl
+
         Protected lblPercentComplete As DevExpress.XtraEditors.LabelControl
+
         Protected lblPercentCompleteValue As DevExpress.XtraEditors.LabelControl
+
         Private mxContacts As DevExpress.XtraEditors.MemoExEdit
+
         Private labelControl1 As DevExpress.XtraEditors.LabelControl
     End Class
 End Namespace
